@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Study Planner</title>
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ══════════════════════════════
+       HEADER
+  ══════════════════════════════ -->
+  <header>
+    <div class="logo">
+      <h1>Study<span>Plan</span></h1>
+      <p>Smart Academic Planner &amp; Timetable Maker</p>
+    </div>
+    <button class="dbtn" onclick="tgD()">
+      <span id="di">🌙</span>
+      <span id="dl">Dark Mode</span>
+    </button>
+  </header>
+
+  <!-- ══════════════════════════════
+       TAB NAVIGATION
+  ══════════════════════════════ -->
+  <div class="tabs">
+    <button class="tab on" onclick="sw('tasks', this)">📋 Tasks &amp; Progress</button>
+    <button class="tab"    onclick="sw('tt', this)">🗓 Timetable Maker</button>
+  </div>
+
+  <!-- ══════════════════════════════
+       PANEL 1 — TASKS & PROGRESS
+  ══════════════════════════════ -->
+  <div id="panel-tasks" class="panel on">
+
+    <!-- Smart Priority Banner -->
+    <div id="sgb" class="hid">
+      <span class="badge">⚡ Priority</span>
+      <span id="sgt"></span>
+    </div>
+
+    <!-- Progress Card -->
+    <div class="card pcard">
+      <div class="stats">
+        <div>
+          <div class="snum r" id="st">0</div>
+          <div class="slbl">Total</div>
+        </div>
+        <div>
+          <div class="snum g" id="sd">0</div>
+          <div class="slbl">Done</div>
+        </div>
+        <div>
+          <div class="snum" id="sp">0</div>
+          <div class="slbl">Pending</div>
+        </div>
+      </div>
+      <div class="pbw">
+        <div class="pbl">
+          <span>Progress</span>
+          <span id="pct">0%</span>
+        </div>
+        <div class="pbt">
+          <div class="pbf" id="pb" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Task Card -->
+    <div class="card" style="margin-bottom: 18px">
+      <div class="ct">➕ Add New Task</div>
+      <div class="frow">
+        <div class="fg" style="flex: 2; min-width: 160px">
+          <label>Task Name</label>
+          <input type="text" id="tn" placeholder="e.g. Revise Chapter 5…" maxlength="80" />
+        </div>
+        <div class="fg" style="flex: 1.2; min-width: 120px">
+          <label>Subject</label>
+          <input type="text" id="ts" placeholder="e.g. Physics" maxlength="40" />
+        </div>
+        <div class="fg" style="min-width: 140px">
+          <label>Deadline</label>
+          <input type="date" id="tdl" />
+        </div>
+        <div class="fg" style="min-width: 90px; flex: 0 0 auto">
+          <label>&nbsp;</label>
+          <button class="bp" onclick="addTask()">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="filters">
+      <button class="fb on" onclick="setFilter('all', this)">All</button>
+      <button class="fb"    onclick="setFilter('pending', this)">Pending</button>
+      <button class="fb"    onclick="setFilter('completed', this)">Completed</button>
+      <button class="fb"    onclick="setFilter('urgent', this)">⚠ Urgent</button>
+    </div>
+    <div class="slbl2" id="ll">All Tasks</div>
+
+    <!-- Task List -->
+    <div id="tl"></div>
+
+  </div><!-- /panel-tasks -->
+
+  <!-- ══════════════════════════════
+       PANEL 2 — TIMETABLE MAKER
+  ══════════════════════════════ -->
+  <div id="panel-tt" class="panel">
+    <div class="ttl2">
+
+      <!-- Left Column: Controls -->
+      <div class="ttc">
+
+        <!-- Add Session Card -->
+        <div class="card">
+          <div class="ct">➕ Add Class / Session</div>
+
+          <div class="ttfg">
+            <label>Subject / Session Name</label>
+            <input type="text" id="ttn" placeholder="e.g. Mathematics" maxlength="40" />
+          </div>
+
+          <div class="ttfg">
+            <label>Days</label>
+            <div class="dbs" id="dbs"></div>
+          </div>
+
+          <div class="trow">
+            <div class="ttfg">
+              <label>Start</label>
+              <input type="time" id="tts" value="09:00" />
+            </div>
+            <div class="ttfg">
+              <label>End</label>
+              <input type="time" id="tte" value="10:00" />
+            </div>
+          </div>
+
+          <div class="ttfg">
+            <label>Colour</label>
+            <div class="crow" id="cr"></div>
+          </div>
+
+          <div style="margin-top: 12px">
+            <button class="bp" style="width: 100%; text-align: center" onclick="addSession()">
+              Add Session
+            </button>
+          </div>
+        </div>
+
+        <!-- Auto-Generate Card -->
+        <div class="card">
+          <div class="ct">🤖 Smart Auto-Generate</div>
+          <p style="font-size: 0.79rem; color: var(--txm); margin-bottom: 12px; line-height: 1.55">
+            Builds a full week study schedule from your pending tasks,
+            prioritising subjects with the closest deadlines.
+          </p>
+
+          <div class="trow">
+            <div class="ttfg">
+              <label>Hours / day</label>
+              <input type="number" id="tth" min="1" max="12" value="4" />
+            </div>
+            <div class="ttfg">
+              <label>Break (min)</label>
+              <input type="number" id="ttb" min="0" max="60" value="10" />
+            </div>
+          </div>
+
+          <div class="ttfg">
+            <label>Day start time</label>
+            <input type="time" id="ttds" value="08:00" />
+          </div>
+
+          <div style="margin-top: 12px">
+            <button
+              class="bp"
+              style="width: 100%; text-align: center"
+              onclick="generateSchedule()"
+            >
+              ⚡ Generate Schedule
+            </button>
+          </div>
+        </div>
+
+        <!-- Session List Card -->
+        <div class="card">
+          <div class="ct" style="margin-bottom: 10px">
+            📌 Sessions (<span id="sc">0</span>)
+          </div>
+          <div class="slist" id="sl">
+            <div class="emp" style="padding: 16px 8px"><p>No sessions yet</p></div>
+          </div>
+        </div>
+
+      </div><!-- /ttc -->
+
+      <!-- Right Column: Grid -->
+      <div class="gw">
+        <div class="gi">
+          <div class="gb">
+            <h3 id="wl">Weekly Timetable</h3>
+            <div class="gba">
+              <button
+                class="bs"
+                style="font-size: 0.76rem; padding: 6px 12px"
+                onclick="clearTimetable()"
+              >🗑 Clear</button>
+              <button
+                class="bs"
+                style="font-size: 0.76rem; padding: 6px 12px"
+                onclick="window.print()"
+              >🖨 Print</button>
+            </div>
+          </div>
+          <!-- Timetable grid rendered by JS -->
+          <div id="gg"></div>
+        </div>
+      </div><!-- /gw -->
+
+    </div><!-- /ttl2 -->
+  </div><!-- /panel-tt -->
+
+</div><!-- /.app -->
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- App Logic -->
+<script src="app.js"></script>
+</body>
+</html>
